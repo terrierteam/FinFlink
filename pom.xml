@@ -1,0 +1,164 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Infinitech-FinFlink</groupId>
+  <artifactId>Infinitech-FinFlink</artifactId>
+  <version>0.0.1</version>
+  
+<dependencies>
+  
+<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-java -->
+<dependency>
+    <groupId>org.apache.flink</groupId>
+    <artifactId>flink-streaming-java_2.12</artifactId>
+    <version>1.14.4</version>
+    <scope>provided</scope>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.apache.flink/flink-clients -->
+<dependency>
+    <groupId>org.apache.flink</groupId>
+    <artifactId>flink-clients_2.12</artifactId>
+    <version>1.14.4</version>
+    <scope>provided</scope>
+</dependency>
+<dependency>
+    <groupId>org.apache.flink</groupId>
+    <artifactId>flink-connector-kafka_2.11</artifactId>
+    <version>1.14.4</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>31.1-jre</version>
+</dependency>
+
+    <dependency>
+        <groupId>org.questdb</groupId>
+        <artifactId>questdb</artifactId>
+        <version>6.4.3</version>
+    </dependency>
+
+</dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    
+    <resources>
+        <resource>
+            <directory>resources/</directory>
+            <targetPath>${project.build.directory}</targetPath>
+            <includes>
+                <include>log4j.properties</include>
+            </includes>
+        </resource>
+    </resources>
+    
+    <pluginManagement>
+	<plugins>
+		<!--This plugin's configuration is used to store Eclipse m2e settings only. 
+			It has no influence on the Maven build itself. -->
+		<plugin>
+			<groupId>org.eclipse.m2e</groupId>
+			<artifactId>lifecycle-mapping</artifactId>
+			<version>1.0.0</version>
+			<configuration>
+				<lifecycleMappingMetadata>
+					<pluginExecutions>
+						<pluginExecution>
+							<pluginExecutionFilter>
+								<groupId>org.codehaus.mojo</groupId>
+								<artifactId>aspectj-maven-plugin</artifactId>
+								<versionRange>[1.0,)</versionRange>
+								<goals>
+									<goal>test-compile</goal>
+									<goal>compile</goal>
+								</goals>
+							</pluginExecutionFilter>
+							<action>
+								<execute />
+							</action>
+						</pluginExecution>
+						<pluginExecution>
+							<pluginExecutionFilter>
+								<groupId>
+									org.apache.maven.plugins
+								</groupId>
+								<artifactId>
+									maven-install-plugin
+								</artifactId>
+								<versionRange>
+									[2.5,)
+								</versionRange>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+							</pluginExecutionFilter>
+							<action>
+								<execute>
+									<runOnIncremental>false</runOnIncremental>
+								</execute>
+							</action>
+						</pluginExecution>
+					</pluginExecutions>
+				</lifecycleMappingMetadata>
+			</configuration>
+		</plugin>
+	</plugins>
+</pluginManagement>
+    
+    
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <release>11</release>
+        </configuration>
+      </plugin>
+      
+      <!-- Packages those sources in a Jar file -->
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.1.1</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <artifactSet>
+                            <excludes>
+                                <exclude>com.google.code.findbugs:jsr305</exclude>
+                                <exclude>org.slf4j:*</exclude>
+                                <exclude>log4j:*</exclude>
+                            </excludes>
+                        </artifactSet>
+                        <filters>
+                            <filter>
+                                <!-- Do not copy the signatures in the META-INF folder.
+                                Otherwise, this might cause SecurityExceptions when using the JAR. -->
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <exclude>META-INF/*.SF</exclude>
+                                    <exclude>META-INF/*.DSA</exclude>
+                                    <exclude>META-INF/*.RSA</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
+                        <transformers>
+                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <mainClass>eu.infinitech.finflink.apps.FinFlinkExample</mainClass>
+                            </transformer>
+                        </transformers>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+      
+      
+    </plugins>
+  </build>
+</project>
